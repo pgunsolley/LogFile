@@ -24,8 +24,22 @@ use \Exception;
  */
 class LogFile implements Iterator
 {
+    /**
+     * Exception message when the file pointer has been closed (via gc or fclose)
+     */
     const CLOSED_RESOURCE_MESSAGE   = 'Unable to return line because the file pointer is closed';
+
+
+    /**
+     * Exception message when the file does not exist
+     */
     const FILE_NOT_FOUND_MESSAGE    = 'The specified file %s does not exist or is inaccessible.';
+
+    /**
+     * The name of the file (without the full path)
+     * @var
+     */
+    protected $name;
 
     /**
      * The string path to the file
@@ -68,6 +82,7 @@ class LogFile implements Iterator
             throw new Exception(sprintf(self::FILE_NOT_FOUND_MESSAGE, $path));
         }
 
+        $this->name = array_pop(explode('/', $path));
         $this->path = $path;
         $this->resource = fopen($path, 'r');
         $this->filterLineBy = $filterLineBy;
